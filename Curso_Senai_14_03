@@ -1,0 +1,242 @@
+CREATE DATABASE db_cinema;
+
+USE db_cinema;
+
+CREATE TABLE tb_estudio (
+    id_estudio INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(45) NOT NULL,
+    proprietario VARCHAR(45) NOT NULL,
+    fatur_ano_ant DECIMAL(10 , 2 ) NOT NULL,
+    data_fundacao DATE NOT NULL
+)  DEFAULT CHARSET UTF8;
+
+INSERT INTO tb_estudio VALUES (20240314, "Estúdio Criativo", "Ana Silva", 100000.00, "2000-05-15"),
+	(DEFAULT, "Estúdio Digital", "Carlos Mendes", 150000.00, "1998-09-20"),
+	(DEFAULT, "Estúdio Inovadoras", "Sofia Santos", 200000.00, "2005-11-10"),
+	(DEFAULT, "Estúdio Impacto", "João Oliveira", 80000.00, "2010-03-25"),
+	(DEFAULT, "Estúdio Arte", "Mariana Costa", 300000.00, "1995-07-08"),
+	(DEFAULT, "Estúdio Tecnológico", "Pedro Almeida", 120000.00, "2008-12-03"),
+	(DEFAULT, "Estúdio Lumière", "Laura Pereira", 180000.00, "2012-06-28"),
+	(DEFAULT, "Estúdio Design", "Miguel Fernandes", 250000.00, "2003-09-17"),
+	(DEFAULT, "Estúdio Fotografia", "Inês Carvalho", 90000.00, "2015-04-20"),
+	(DEFAULT, "Estúdio Futurista", "Tiago Rodrigues", 220000.00, "2006-10-11");
+
+CREATE TABLE tb_filmes (
+    id_filme INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id_estudio INT,
+    meses INT NOT NULL,
+    nome VARCHAR(45) NOT NULL,
+    ano_lancamento YEAR NOT NULL,
+    custo_total DECIMAL(10 , 2 ) NOT NULL,
+    FOREIGN KEY (id_estudio)
+        REFERENCES tb_estudio (id_estudio)
+)  DEFAULT CHARSET UTF8;
+
+INSERT INTO tb_filmes VALUES (1, 20240314, 12, "O Destino do Artista", 2023, 500000.00),
+    (DEFAULT, 20240315, 10, "A Inovação Digital", 2022, 350000.00),
+    (DEFAULT, 20240316, 8, "Revolução Criativa", 2024, 280000.00),
+    (DEFAULT, 20240317, 6, "Impacto Visual", 2023, 200000.00),
+    (DEFAULT, 20240318, 2, "Harmonia das Cores", 2021, 450000.00),
+    (DEFAULT, 20240319, 1, "Tecnologia em Foco", 2022, 380000.00),
+    (DEFAULT, 20240320, 2, "Luzes da Sétima Arte", 2023, 300000.00),
+    (DEFAULT, 20240321, 5, "Design da Renovação", 2024, 420000.00),
+    (DEFAULT, 20240322, 11, "Flash de Emoções", 2022, 320000.00),
+    (DEFAULT, 20240323, 7, "Multimídia Futurista", 2023, 390000.00);
+
+CREATE TABLE tb_atores (
+    id_ator INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(45) NOT NULL,
+    nacionalidade VARCHAR(45) NOT NULL,
+    idade INT NOT NULL,
+    sexo CHAR(1) NOT NULL
+)  DEFAULT CHARSET UTF8;
+
+INSERT INTO tb_atores VALUES (1, "Gabriel Oliveira", "Brasileira", 32, "M"),
+    (DEFAULT, "Isabel Silva", "Portuguesa", 28, "F"),
+    (DEFAULT, "André Santos", "Espanhola", 33, "M"),
+    (DEFAULT, "Rita Almeida", "Italiana", 26, "F"),
+    (DEFAULT, "Diego Torres", "Francesa", 30, "M"),
+    (DEFAULT, "Carolina Mendes", "Alemã", 29, "F"),
+    (DEFAULT, "Lucas Garcia", "Argentina", 34, "M"),
+    (DEFAULT, "Catarina Costa", "Holandesa", 27, "F"),
+    (DEFAULT, "Fernando Fernandes", "Inglesa", 31, "M"),
+    (DEFAULT, "Helena Carvalho", "Russa", 25, "F");
+
+CREATE TABLE tb_atuam (
+    id_atuam INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    id_ator INT,
+    id_filme INT,
+    cache_value DECIMAL(10 , 2 ) NOT NULL,
+    personagem VARCHAR(45) NOT NULL,
+    FOREIGN KEY (id_ator)
+        REFERENCES tb_atores (id_ator),
+    FOREIGN KEY (id_filme)
+        REFERENCES tb_filmes (id_filme)
+)  DEFAULT CHARSET UTF8;
+
+INSERT INTO tb_atuam VALUES (1, 1, 1, 10000.00, "Protagonista"),
+    (DEFAULT, 2, 2, 8000.00, "Personagem Principal"),
+    (DEFAULT, 3, 3, 12000.00, "Vilão"),
+    (DEFAULT, 4, 4, 9000.00, "Co-Protagonista"),
+    (DEFAULT, 5, 5, 15000.00, "Heroína"),
+    (DEFAULT, 6, 6, 11000.00, "Anti-Herói"),
+    (DEFAULT, 7, 7, 8500.00, "Personagem Secundário"),
+    (DEFAULT, 8, 8, 13000.00, "Protagonista Feminina"),
+    (DEFAULT, 9, 9, 9500.00, "Personagem de Apoio"),
+    (DEFAULT, 10, 10, 14000.00, "Personagem Principal Masculino");
+    
+-- Exc 1
+SELECT 
+    nome AS 'Estudio'
+FROM
+    tb_estudio;
+    
+-- Exc 2
+SELECT 
+    ano_lancamento AS 'Ano',
+    COUNT(ano_lancamento) AS 'Quantidade'
+FROM
+    tb_filmes
+GROUP BY ano_lancamento;
+
+-- Exc 3
+SELECT 
+    nome AS 'Nome',
+    nacionalidade AS 'Nacionalidade'
+FROM
+    tb_atores
+WHERE
+    nacionalidade <> 'Brasileira';
+
+-- Exc 4
+SELECT 
+    nome AS 'Título do Filme',
+    ano_lancamento AS 'Ano do Lançamento'
+FROM
+    tb_filmes
+ORDER BY ano_lancamento DESC
+LIMIT 1;
+
+-- Exc 5 /// Superior a 140 mil
+SELECT 
+    nome AS 'Estudio',
+    fatur_ano_ant AS 'Faturamento'
+FROM
+    tb_estudio
+WHERE
+    fatur_ano_ant > 140000.00
+ORDER BY fatur_ano_ant ASC;
+
+-- Exc 6
+SELECT 
+    nome AS 'Nome',
+    idade AS 'Idade'
+FROM
+    tb_atores
+WHERE
+    idade < 30
+ORDER BY idade ASC;
+
+-- Exc 7
+SELECT 
+    FORMAT(SUM(meses) / COUNT(meses), 1) AS 'Média de Meses de Produção'
+FROM
+    tb_filmes;
+    
+-- Exc 8
+SELECT 
+    atr.nome AS 'Nome',
+    fil.nome AS 'Filme',
+    atu.cache_value AS 'Cache'
+FROM
+    tb_atores AS atr
+        INNER JOIN
+    tb_atuam AS atu ON atr.id_ator = atu.id_ator
+        INNER JOIN
+    tb_filmes AS fil ON atu.id_filme = fil.id_filme
+ORDER BY atu.cache_value DESC
+LIMIT 1;
+
+-- Exc 9 /// Últimos 2 anos
+SELECT 
+    nome AS 'Nome',
+    ano_lancamento AS 'Ano de Lançamento'
+FROM
+    tb_filmes
+WHERE
+    ano_lancamento > (SELECT 
+            MAX(ano_lancamento) - 2
+        FROM
+            tb_filmes);
+            
+-- Exc 10
+SELECT 
+    nome AS 'Estudio',
+    data_fundacao AS 'Data de Fundação'
+FROM
+    tb_estudio
+ORDER BY data_fundacao DESC
+LIMIT 1;
+
+-- Exc 11 /// 10 atores e 10 filmes, nenhum ator fez mais de um filme neste database
+SELECT 
+    atr.nome AS 'Nome',
+    COUNT(fil.id_filme) AS 'Quantidade de Filmes Feitos'
+FROM
+    tb_atores AS atr
+        INNER JOIN
+    tb_atuam AS atu ON atr.id_ator = atu.id_ator
+        INNER JOIN
+    tb_filmes AS fil ON atu.id_filme = fil.id_filme
+HAVING COUNT(fil.id_filme) > 5;
+
+-- Exc 12 /// Média total dos filmes de TODOS estúdios
+SELECT 
+    FORMAT(AVG(custo_total), 2) AS 'Custo Médio Total dos Filmes'
+FROM
+    tb_filmes;
+    
+-- Exc 13 /// Há apenas 1 ator Brasileiro e nenhum ator acima de 40 anos no database -> Exc 13) Atores acima de 30 anos
+SELECT 
+    nome AS 'Nome',
+    idade AS 'Idade'
+FROM
+    tb_atores
+WHERE
+    idade > 30
+ORDER BY idade DESC;
+
+-- Exc 14
+SELECT 
+    nome AS 'Título do Filme',
+    custo_total AS 'Custo Total'
+FROM
+    tb_filmes
+ORDER BY custo_total ASC;
+
+-- Exc 15 /// Letra inicial entre A a E
+SELECT 
+    nome AS 'Nome'
+FROM
+    tb_atores
+WHERE
+    nome BETWEEN 'A%' AND 'E%';
+    
+-- Exc 16 /// Entre 310 mil e 500 mil
+SELECT
+    nome AS 'Título do Filme',
+    custo_total AS 'Custo Total'
+FROM
+    tb_filmes
+WHERE
+    custo_total BETWEEN 310000.00 AND 500000.00
+ORDER BY custo_total DESC;
+
+-- Exc 17 /// Faturamento superior a 100 mil e data anterior a 2005
+SELECT 
+    COUNT(id_estudio) AS 'Quantidade de Estúdios'
+FROM
+    tb_estudio
+WHERE
+    fatur_ano_ant > 100000.00
+        AND data_fundacao < '2005%';
