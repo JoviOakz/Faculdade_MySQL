@@ -1,0 +1,137 @@
+CREATE DATABASE db_pai_filho;
+
+USE db_pai_filho;
+
+CREATE TABLE tb_pai (
+    id_pai SMALLINT(6) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nome_pai VARCHAR(50) NOT NULL
+)  DEFAULT CHARSET UTF8;
+
+CREATE TABLE tb_filho (
+    id_filho SMALLINT(6) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    nome_filho VARCHAR(50) NOT NULL,
+    id_pai SMALLINT(6),
+    FOREIGN KEY (id_pai)
+        REFERENCES tb_pai (id_pai)
+        ON UPDATE CASCADE ON DELETE CASCADE
+)  DEFAULT CHARSET UTF8;
+
+INSERT INTO tb_pai VALUES(1, 'Darth Vader');
+INSERT INTO tb_pai VALUES(default, 'Goku'),
+(default, 'Vegeta'),
+(default, 'Seu Cebola'),
+(default, 'Zurg'),
+(default, 'Neymar');
+
+INSERT INTO tb_filho VALUES(1, 'Luke Skywalker', 1);
+INSERT INTO tb_filho VALUES
+(default, 'Gohan', 2),
+(default, 'Trunks', 3),
+(default, 'Cebolinha', 4),
+(default, 'Buzz Ligthyear', 5),
+(default, 'Neymar Jr', 6);
+
+SELECT * FROM tb_pai;
+SELECT * FROM tb_filho;
+
+-- Exc 1)
+SELECT 
+	P.id_pai AS 'ID Pai',
+	P.nome_pai AS 'Nome Pai',
+    F.id_filho AS 'ID Filho',
+    F.nome_filho AS 'Nome Filho'
+FROM
+    tb_filho AS F
+        INNER JOIN
+    tb_pai AS P ON F.id_pai = P.id_pai;
+    
+DELETE FROM tb_filho 
+WHERE
+    id_filho = 4; -- Seu Cebola não é associado a nenhum filho já que Cebolinha foi excluído
+    
+-- Exc 2)
+SELECT 
+	P.id_pai AS 'ID Pai',
+	P.nome_pai AS 'Nome Pai',
+    F.id_filho AS 'ID Filho',
+    F.nome_filho AS 'Nome Filho'
+FROM
+    tb_filho AS F
+        INNER JOIN
+    tb_pai AS P ON F.id_pai = P.id_pai;
+    
+DELETE FROM tb_pai
+WHERE
+    id_pai = 6; -- Tanto o Neymar quanto o Neymar Jr são excluídos
+    
+-- Exc 3)
+INSERT INTO tb_pai VALUES(6, 'Neymar');
+INSERT INTO tb_filho VALUES(4, 'Cebolinha', 4),
+(6, 'Neymar', 6);
+
+ALTER TABLE tb_filho ADD CONSTRAINT fk_id FOREIGN KEY (id_pai) REFERENCES tb_pai(id_pai) ON UPDATE Set Null ON DELETE Set Null;
+
+-- Exc 4)
+SELECT 
+	P.id_pai AS 'ID Pai',
+	P.nome_pai AS 'Nome Pai',
+    F.id_filho AS 'ID Filho',
+    F.nome_filho AS 'Nome Filho'
+FROM
+    tb_filho AS F
+        RIGHT JOIN
+    tb_pai AS P ON F.id_pai = P.id_pai;
+    
+DELETE FROM tb_filho
+WHERE
+    id_filho = 4; -- O Cebolinha é excluído mas o Seu Cebola não, aparece na table que o Seu Cebola não possui filho 'NULL'
+    
+-- Exc 5)
+SELECT 
+	P.id_pai AS 'ID Pai',
+	P.nome_pai AS 'Nome Pai',
+    F.id_filho AS 'ID Filho',
+    F.nome_filho AS 'Nome Filho'
+FROM
+    tb_filho AS F
+        RIGHT JOIN
+    tb_pai AS P ON F.id_pai = P.id_pai; 
+    
+DELETE FROM tb_pai 
+WHERE
+    id_pai = 1; -- Darth Vader é exlcuído porém Luke ainda está na table, pai aparece como 'NULL'
+    
+-- Exc 6)
+INSERT INTO tb_pai VALUES(1, 'Darth Vader');
+
+ALTER TABLE tb_filho ADD CONSTRAINT fk_id_2 FOREIGN KEY (id_pai) REFERENCES tb_pai(id_pai) ON UPDATE Restrict ON DELETE Restrict;
+
+-- Exc 7)
+SELECT 
+	P.id_pai AS 'ID Pai',
+	P.nome_pai AS 'Nome Pai',
+    F.id_filho AS 'ID Filho',
+    F.nome_filho AS 'Nome Filho'
+FROM
+    tb_filho AS F
+        RIGHT JOIN
+    tb_pai AS P ON F.id_pai = P.id_pai; 
+    
+DELETE FROM tb_filho
+WHERE
+    id_filho = 4; -- Seu Cebola permanece na tabela mas Cebolinha não
+    
+-- Exc 8)
+SELECT 
+	P.id_pai AS 'ID Pai',
+	P.nome_pai AS 'Nome Pai',
+    F.id_filho AS 'ID Filho',
+    F.nome_filho AS 'Nome Filho'
+FROM
+    tb_filho AS F
+        RIGHT JOIN
+    tb_pai AS P ON F.id_pai = P.id_pai; 
+    
+DELETE FROM tb_pai
+WHERE
+    id_pai = 1; -- Não é possível deletar o pai pois o Restrict não permite excluir dados que possuem uma foreign key referenciada
