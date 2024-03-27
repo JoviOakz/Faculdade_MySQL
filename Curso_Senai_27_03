@@ -1,0 +1,76 @@
+CREATE DATABASE db_ginasio;
+
+USE db_ginasio;
+
+CREATE TABLE tb_espaço (
+    ID_Espaço INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Nome_Espaço VARCHAR(255) NOT NULL
+)  DEFAULT CHARSET UTF8;
+
+CREATE TABLE tb_esporte (
+    ID_Esporte INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Nome_Esporte VARCHAR(55) NOT NULL
+)  DEFAULT CHARSET UTF8;
+
+CREATE TABLE tb_equipe (
+    ID_Equipe INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Nome VARCHAR(155) NOT NULL
+)  DEFAULT CHARSET UTF8;
+
+CREATE TABLE tb_aluno (
+    ID_Aluno INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    Nome_Aluno VARCHAR(255) NOT NULL,
+    Status_Aluno ENUM('Ativo', 'Inativo') NOT NULL,
+    ID_Equipe INT,
+    FOREIGN KEY (ID_Equipe)
+        REFERENCES tb_equipe (ID_Equipe)
+        ON UPDATE CASCADE ON DELETE SET NULL
+)  DEFAULT CHARSET UTF8;
+
+CREATE TABLE tb_reserva (
+    ID_Reserva INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    ID_Espaço INT,
+    ID_Esporte INT,
+    ID_Equipe INT,
+    Horario TIME NOT NULL,
+    Dia DATE NOT NULL,
+    FOREIGN KEY (ID_Espaço)
+        REFERENCES tb_espaço (ID_Espaço)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (ID_Esporte)
+        REFERENCES tb_esporte (ID_Esporte)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (ID_Equipe)
+        REFERENCES tb_equipe (ID_Equipe)
+        ON UPDATE CASCADE ON DELETE CASCADE
+)  DEFAULT CHARSET UTF8;
+
+INSERT INTO tb_espaço VALUES (1, 'Sala Verde'),
+(DEFAULT, 'Quadra dos Sonhos'),
+(DEFAULT, 'Salão das Artes'),
+(DEFAULT, 'Arena Esportiva'),
+(DEFAULT, 'Espaço Recreativo');
+
+INSERT INTO tb_esporte VALUES (1, 'Vôlei'),
+(DEFAULT, 'Futebol'),
+(DEFAULT, 'Tênis'),
+(DEFAULT, 'Basquete'),
+(DEFAULT, 'Ginástica');
+
+INSERT INTO tb_equipe VALUES (1, 'Topal'),
+(DEFAULT, 'Jesma'),
+(DEFAULT, 'Kwilton');
+
+INSERT INTO tb_aluno VALUES (1, 'Murylo', 'Ativo', 1),
+(DEFAULT, 'Mavi', 'Ativo', 2),
+(DEFAULT, 'Nicolas', 'Ativo', 1),
+(DEFAULT, 'Zago', 'Ativo', 3),
+(DEFAULT, 'André', 'Ativo', 3),
+(DEFAULT, 'Jessica', 'Ativo', 1),
+(DEFAULT, 'Isa', 'Ativo', 2),
+(DEFAULT, 'Yasmin C', 'Ativo', 3),
+(DEFAULT, 'Maria C', 'Ativo', 2),
+(DEFAULT, 'Marlon', 'Inativo', 2),
+(DEFAULT, 'Michel', 'Inativo', 1),
+(DEFAULT, 'Ana K', 'Ativo', 2),
+(DEFAULT, 'João M', 'Inativo', 2);
